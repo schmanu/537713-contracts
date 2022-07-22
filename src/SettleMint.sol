@@ -5,7 +5,7 @@ contract SettleMint {
     event AddedOwner(address indexed account);
     event AddedMember(address indexed account);
 
-    event NewExpense(address indexed payer, uint amount, address[] participants);
+    event NewExpense(address indexed payer, uint amount, address[] participants, string description);
 
     /** Marker for first element in linked lists */
     address internal constant ADDRESS_GUARD = address(0x1);
@@ -130,7 +130,7 @@ contract SettleMint {
      * Adds expense paid by payer split evenly among participants.
      * Participants addresses need to be in ascending order.
      */
-    function addExpense(uint amount, address payer, address[] memory _participants) public onlyMembers {
+    function addExpense(uint amount, address payer, address[] memory _participants, string memory description) public onlyMembers {
         uint participantsCount = _participants.length;
         uint residue = amount % participantsCount;
         uint share = amount / participantsCount;
@@ -156,7 +156,7 @@ contract SettleMint {
             }
         }
         totalExpense = totalExpense + amount;
-        emit NewExpense(payer, amount, _participants);
+        emit NewExpense(payer, amount, _participants, description);
     }
 
     function _adjustBalance(int amount, address account) internal onlyMembers {

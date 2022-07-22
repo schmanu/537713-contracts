@@ -8,7 +8,7 @@ contract SettleMintTest is Test {
     event AddedOwner(address indexed account);
     event AddedMember(address indexed account);
 
-    event NewExpense(address indexed payer, uint amount, address[] participants);
+    event NewExpense(address indexed payer, uint amount, address[] participants, string description);
 
 
     address mockToken = address(321);
@@ -155,8 +155,8 @@ contract SettleMintTest is Test {
             participants[0] = member2;
 
             vm.expectEmit(true, false, false, true);
-            emit NewExpense(member1, 1000, participants);
-            settlemint.addExpense(1000, member1, participants);
+            emit NewExpense(member1, 1000, participants, "Test");
+            settlemint.addExpense(1000, member1, participants, "Test");
 
             assertEq(settlemint.balances(member1), 1000);
             assertEq(settlemint.balances(member2), -1000);
@@ -170,7 +170,7 @@ contract SettleMintTest is Test {
             participants[0] = member1;
             participants[1] = member3;
 
-            settlemint.addExpense(2000, member2, participants);
+            settlemint.addExpense(2000, member2, participants, "Test");
 
             assertEq(settlemint.balances(member1), 0);
             assertEq(settlemint.balances(member2), 1000);
@@ -186,7 +186,7 @@ contract SettleMintTest is Test {
             participants[1] = member2;
             participants[2] = member3;
 
-            settlemint.addExpense(3000, member1, participants);
+            settlemint.addExpense(3000, member1, participants, "Test");
 
             assertEq(settlemint.balances(member1), 2000);
             assertEq(settlemint.balances(member2), 0);
@@ -199,7 +199,7 @@ contract SettleMintTest is Test {
             address[] memory participants = new address[](1);
             participants[0] = member1;
 
-            settlemint.addExpense(1000, member1, participants);
+            settlemint.addExpense(1000, member1, participants, "Test");
 
             assertEq(settlemint.balances(member1), 2000);
             assertEq(settlemint.balances(member2), 0);
@@ -224,7 +224,7 @@ contract SettleMintTest is Test {
             participants[0] = member2;
             participants[1] = member3;
 
-            settlemint.addExpense(5, member1, participants);
+            settlemint.addExpense(5, member1, participants, "Test");
 
             assertEq(settlemint.balances(member1), 5);
             assertEq(settlemint.balances(member2), -3);
@@ -239,7 +239,7 @@ contract SettleMintTest is Test {
             participants[1] = member2;
             participants[2] = member3;
 
-            settlemint.addExpense(11, member1, participants);
+            settlemint.addExpense(11, member1, participants, "Test");
 
             assertEq(settlemint.balances(member1), 5 + 11 - 4);
             assertEq(settlemint.balances(member2), -3 - 4);
@@ -265,7 +265,7 @@ contract SettleMintTest is Test {
             participants[1] = member2;
             participants[2] = member2;
 
-            settlemint.addExpense(1000, member1, participants);
+            settlemint.addExpense(1000, member1, participants, "Test");
         }
     }
 
@@ -283,7 +283,7 @@ contract SettleMintTest is Test {
             participants[0] = member1;
             participants[1] = member2;
 
-            settlemint.addExpense(1000, member1, participants);
+            settlemint.addExpense(1000, member1, participants, "Test");
         }
     }
 }

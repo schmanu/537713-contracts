@@ -1,0 +1,17 @@
+{
+  "short_name": "settle mint",
+  "name": "537713M1nt",
+  "description": "Track and settle group expenses on-chain",
+  "iconPath": "",
+  "icons": [
+    {
+      "src": "",
+      "type": "",
+      "sizes": ""
+    }
+  ],
+  "start_url": ".",
+  "display": "",
+  "theme_color": "",
+  "background_color": ""
+}

@@ -26,7 +26,7 @@ contract SettleMintTest is Test {
         emit AddedMember(member1);
         vm.expectEmit(true, false, false, true);
         emit AddedOwner(address(this));
-        SettleMint settlemint = new SettleMint(mockToken, members);
+        SettleMint settlemint = new SettleMint(mockToken, members, "Test");
         
         assertTrue(settlemint.isMember(member1));
         assertFalse(settlemint.isMember(member2));
@@ -51,7 +51,7 @@ contract SettleMintTest is Test {
         vm.expectEmit(true, false, false, true);
         emit AddedOwner(address(this));
 
-        SettleMint settlemint = new SettleMint(mockToken, members);
+        SettleMint settlemint = new SettleMint(mockToken, members, "Test");
         
         assertTrue(settlemint.isMember(member1));
         assertTrue(settlemint.isMember(member2));
@@ -64,7 +64,7 @@ contract SettleMintTest is Test {
     function testAddRemoveMembers() public {
         address[] memory  members = new address[](1);
         members[0] = member1;
-        SettleMint settlemint = new SettleMint(mockToken, members);
+        SettleMint settlemint = new SettleMint(mockToken, members, "Test");
         vm.expectEmit(true, false, false, true);
         emit AddedMember(member2);
         settlemint.addMember(member2);
@@ -110,7 +110,7 @@ contract SettleMintTest is Test {
     function testAddRemoveOwners() public {
         address[] memory  members = new address[](1);
         members[0] = member1;
-        SettleMint settlemint = new SettleMint(mockToken, members);
+        SettleMint settlemint = new SettleMint(mockToken, members, "Test");
 
 
         // Expect revert when trying to remove the only owner
@@ -147,7 +147,7 @@ contract SettleMintTest is Test {
         // Only members can add expenses
         members[3] = address(this);
 
-        SettleMint settlemint = new SettleMint(mockToken, members);
+        SettleMint settlemint = new SettleMint(mockToken, members, "Test");
 
         // Member 1 pays 1000 to member 2
         {
@@ -216,7 +216,7 @@ contract SettleMintTest is Test {
         // Only members can add expenses
         members[3] = address(this);
 
-        SettleMint settlemint = new SettleMint(mockToken, members);
+        SettleMint settlemint = new SettleMint(mockToken, members, "Test");
 
         // Member 1 pays 5 for members 2 and 3
         {
@@ -256,7 +256,7 @@ contract SettleMintTest is Test {
         // Only members can add expenses
         members[3] = address(this);
 
-        SettleMint settlemint = new SettleMint(mockToken, members);
+        SettleMint settlemint = new SettleMint(mockToken, members, "Test");
 
         // Member 1 tries to add member 2 twice to split expense
         {
@@ -275,7 +275,7 @@ contract SettleMintTest is Test {
         members[1] = member2;
         members[2] = member3;
 
-        SettleMint settlemint = new SettleMint(mockToken, members);
+        SettleMint settlemint = new SettleMint(mockToken, members, "Test");
 
         // address(this) is not a member, thus addExpense fails
         {

@@ -15,6 +15,8 @@ export type ConnectedWallet = {
 
 const ETH_MAINNET_RPC = `https://mainnet.infura.io/v3/${INFURA_TOKEN}`
 const ETH_RINKEBY_RPC = `https://rinkeby.infura.io/v3/${INFURA_TOKEN}`
+const ETH_GOERLI_RPC = `https://goerli.infura.io/v3/${INFURA_TOKEN}`
+const ETH_GNOSIS_CHAIN_RPC = "http://rpc.gnosischain.com/"
 
 const createOnboard = (): OnboardAPI => {
   const injected = injectedModule()
@@ -34,6 +36,18 @@ const createOnboard = (): OnboardAPI => {
         token: "rETH",
         label: "Ethereum Rinkeby Testnet",
         rpcUrl: ETH_RINKEBY_RPC,
+      },
+      {
+        id: "0x5",
+        token: "gETH",
+        label: "Ethereum Goerli Testnet",
+        rpcUrl: ETH_GOERLI_RPC,
+      },
+      {
+        id: "0x64",
+        token: "xDai",
+        label: "Gnosis Chain",
+        rpcUrl: ETH_GNOSIS_CHAIN_RPC,
       },
     ],
     appMetadata: {

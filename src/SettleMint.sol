@@ -11,6 +11,7 @@ contract SettleMint {
     address internal constant ADDRESS_GUARD = address(0x1);
     /** Token which this SettleMint uses to track debts */
     address public immutable token;
+    string public name;
     /** Linked list of SettleMint members */
     mapping(address => address) internal members;
 
@@ -38,8 +39,9 @@ contract SettleMint {
         _;
     }
 
-    constructor(address _token, address[] memory _members) {
+    constructor(address _token, address[] memory _members, string memory _name) {
         token = _token;
+        name = _name;
 
         // Initializing SettleMint members.
         address currentMember = ADDRESS_GUARD;

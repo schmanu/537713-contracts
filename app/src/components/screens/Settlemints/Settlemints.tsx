@@ -1,8 +1,6 @@
 import {
   Box,
   Button,
-  ButtonBase,
-  Chip,
   CircularProgress,
   Grid,
   Paper,
@@ -12,10 +10,10 @@ import { ethers } from "ethers"
 import { useSettlemints } from "src/hooks/useSettlemints"
 import useWallet from "src/hooks/useWallet"
 import { SettleMint__factory } from "src/types/contracts"
-import { shortenAddress } from "src/utils/addresses"
-import AccountCircleTwoToneIcon from "@mui/icons-material/AccountCircleTwoTone"
-import AdminPanelSettingsTwoToneIcon from "@mui/icons-material/AdminPanelSettingsTwoTone"
+
 import { AppState } from "src/App"
+import { MembershipList } from "src/components/common/MembershipList"
+import { useEffect } from "react"
 
 export const Settlemints = ({
   updateState,
@@ -24,7 +22,18 @@ export const Settlemints = ({
   updateState: (newState: AppState) => void
   appState: AppState
 }) => {
-  const [settlemints, isLoading] = useSettlemints()
+  const [memberships, detailsMap, isLoading] = useSettlemints()
+
+  useEffect(() => {
+    if (!isLoading) {
+      updateState({
+        ...appState,
+        memberships: memberships,
+        settlemintMap: detailsMap,
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading])
 
   const wallet = useWallet()
 
@@ -33,19 +42,12 @@ export const Settlemints = ({
       return
     }
     const web3Provider = new ethers.providers.Web3Provider(wallet.provider)
-    const createdContract = await new SettleMint__factory(
-      web3Provider.getSigner()
-    ).deploy(ethers.utils.hexZeroPad("0x0", 20), [wallet.address], "Testgroup")
+    await new SettleMint__factory(web3Provider.getSigner()).deploy(
+      ethers.utils.hexZeroPad("0x0", 20),
+      [wallet.address],
+      "Testgroup"
+    )
   }
-
-  const combinedList = new Map(
-    settlemints
-      ? [
-          ...Array.from(settlemints?.membership.entries()),
-          ...Array.from(settlemints?.ownership.entries()),
-        ]
-      : []
-  )
 
   return (
     <Paper
@@ -58,7 +60,7 @@ export const Settlemints = ({
         gap: 4,
       }}
     >
-      {isLoading || !settlemints ? (
+      {isLoading || !memberships ? (
         wallet ? (
           <Box
             display="flex"
@@ -67,7 +69,7 @@ export const Settlemints = ({
             gap="16px"
           >
             <CircularProgress />
-            <Typography variant="h2">Loading Settlemints...</Typography>
+            <Typography variant="h2">Loading SettleMints...</Typography>
           </Box>
         ) : (
           <Box
@@ -87,79 +89,21 @@ export const Settlemints = ({
             <Grid container direction="row" justifyContent="space-between">
               <Grid item>
                 <Typography variant="h4" fontWeight={700}>
-                  Groups
+                  Your SettleMints
                 </Typography>
               </Grid>
               <Grid item sm={12} md={8}>
-                <Grid container direction="column">
-                  {combinedList.size === 0 && (
-                    <Grid item xs={12}>
-                      <Typography>
-                        You are no member of any SettleMint groups.
-                      </Typography>
-                    </Grid>
-                  )}
-                  {Array.from(combinedList.values()).map((settlemint) => (
-                    <Grid item xs={12} key={settlemint.address}>
-                      <ButtonBase
-                        onClick={() =>
-                          updateState({
-                            selectedSettlement: settlemint.address,
-                            activeStep: 1,
-                          })
-                        }
-                      >
-                        <Grid
-                          container
-                          direction="row"
-                          alignItems="center"
-                          borderRadius="6px"
-                          gap="16px"
-                          width="100%"
-                          p={1}
-                          sx={[
-                            {
-                              "&:hover": {
-                                backgroundColor: (theme) =>
-                                  theme.palette.primary.light,
-                              },
-                              "&": {
-                                cursor: "pointer",
-                                transition: "background-color 0.3s",
-                              },
-                            },
-                          ]}
-                        >
-                          <Grid item>
-                            <Typography
-                              fontFamily="monospace"
-                              textAlign="left"
-                              width="140px"
-                            >
-                              {shortenAddress(settlemint.address)}
-                            </Typography>
-                          </Grid>
-                          <Grid item>
-                            {settlemints.ownership.has(settlemint.address) ? (
-                              <Chip
-                                icon={<AdminPanelSettingsTwoToneIcon />}
-                                sx={{
-                                  fontWeight: 700,
-                                }}
-                                label="Owner"
-                              />
-                            ) : (
-                              <Chip
-                                icon={<AccountCircleTwoToneIcon />}
-                                label="Member"
-                              />
-                            )}
-                          </Grid>
-                        </Grid>
-                      </ButtonBase>
-                    </Grid>
-                  ))}
-                </Grid>
+                <MembershipList
+                  detailsMap={detailsMap}
+                  memberships={memberships}
+                  onItemClick={(address) => {
+                    updateState({
+                      ...appState,
+                      activeStep: 1,
+                      selectedSettlement: address,
+                    })
+                  }}
+                />
               </Grid>
             </Grid>
           </Grid>

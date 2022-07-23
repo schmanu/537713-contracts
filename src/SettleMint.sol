@@ -24,6 +24,8 @@ contract SettleMint {
 
     uint ownerLength;
 
+    uint memberLength;
+
     struct Member {
         address account;
         uint balance;
@@ -42,7 +44,6 @@ contract SettleMint {
     constructor(address _token, address[] memory _members, string memory _name) {
         token = _token;
         name = _name;
-
         // Initializing SettleMint members.
         address currentMember = ADDRESS_GUARD;
         // Fill linked list of members
@@ -58,6 +59,8 @@ contract SettleMint {
         }
         // The last member points to the guard
         members[currentMember] = ADDRESS_GUARD;
+        memberLength = _members.length;
+
 
         // initially there is only one owner
         owners[ADDRESS_GUARD] = msg.sender;
@@ -82,6 +85,7 @@ contract SettleMint {
         members[_member] = members[ADDRESS_GUARD];
         members[ADDRESS_GUARD] = _member;
         balances[_member] = 0;
+        memberLength++;
         emit AddedMember(_member);
     }
 
@@ -126,6 +130,31 @@ contract SettleMint {
         owners[previousAddress] = startAddress;
         owners[_owner] = address(0);
         ownerLength--;
+    }
+
+    function getOwners() public view returns (address[] memory) {
+        address[] memory ownerList = new address[](ownerLength);
+        address currentOwner = ADDRESS_GUARD;
+        uint index = 0;
+        while(owners[currentOwner] != ADDRESS_GUARD) {
+            currentOwner = owners[currentOwner];
+            ownerList[index++] = currentOwner;
+        }
+
+        return ownerList;
+    }
+
+
+    function getMembers() public view returns (address[] memory) {
+        address[] memory memberList = new address[](memberLength);
+        address currentMember = ADDRESS_GUARD;
+        uint index = 0;
+        while(members[currentMember] != ADDRESS_GUARD) {
+            currentMember = members[currentMember];
+            memberList[index++] = currentMember;
+        }
+
+        return memberList;
     }
 
     /**

@@ -33,11 +33,12 @@ export const WalletControl = () => {
       mr={2}
       alignItems="center"
       gap={2}
+      flexGrow={1}
       flexWrap="nowrap"
     >
       <Grid item>
         <Box>
-          <Typography fontWeight={700}>
+          <Typography fontWeight={700} fontFamily="monospace">
             {wallet ? shortenAddress(wallet?.address) : "No wallet connected"}
           </Typography>
           {wallet && (

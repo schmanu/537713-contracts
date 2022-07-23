@@ -9,26 +9,40 @@ type Settlemint = {
   name?: string
 }
 
-type SettlemintWalletData = {
+export type Memberships = {
   membership: Map<string, Settlemint>
   ownership: Map<string, Settlemint>
+}
+
+export type SettlemintMap = Map<string, SettlemintDetails>
+
+export type SettlemintDetails = {
+  name: string
+  address: string
+  members: string[]
+  owners: string[]
 }
 
 const ADDED_MEMBER_TOPIC = ethers.utils.id("AddedMember(address)")
 const ADDED_OWNER_TOPIC = ethers.utils.id("AddedOwner(address)")
 
 export const useSettlemints = (): [
-  SettlemintWalletData | undefined,
+  Memberships | undefined,
+  Map<string, SettlemintDetails> | undefined,
   boolean
 ] => {
   const wallet = useWallet()
-  const [settlemints, setSettlemints] = useState<SettlemintWalletData>()
+  const [memberships, setMemberships] = useState<Memberships>()
+  const [mappedDetails, setMappedDetails] =
+    useState<Map<string, SettlemintDetails>>()
   const [isLoading, setIsLoading] = useState(false)
 
-  const fetchSettlemints = useCallback(async () => {
+  const fetchSettlemints = useCallback(async (): Promise<
+    [Memberships | undefined, Map<string, SettlemintDetails> | undefined]
+  > => {
     try {
       if (!wallet) {
-        return undefined
+        return [undefined, undefined]
       }
       const address = wallet.address
       const web3Provider = new ethers.providers.Web3Provider(wallet.provider)
@@ -42,9 +56,12 @@ export const useSettlemints = (): [
         ],
       })
 
-      return ownerOrMemberLogs.reduce<SettlemintWalletData>(
+      const uniqAddresses = new Set<string>()
+
+      const fetchedMemberships = ownerOrMemberLogs.reduce<Memberships>(
         (previous, current) => {
           const contractAddress = current.address
+          uniqAddresses.add(contractAddress)
 
           if (current.topics[0] === ADDED_MEMBER_TOPIC) {
             const member = ethers.utils.hexStripZeros(current.topics[1])
@@ -70,8 +87,31 @@ export const useSettlemints = (): [
           ownership: new Map<string, Settlemint>(),
         }
       )
+
+      const settlemintDetails = new Map<string, SettlemintDetails>()
+
+      for (const contractAddress of Array.from(uniqAddresses)) {
+        const contract = SettleMint__factory.connect(
+          contractAddress,
+          web3Provider
+        )
+
+        const name = await contract.name()
+        const members = await contract.getMembers()
+        const owners = await contract.getOwners()
+
+        settlemintDetails.set(contractAddress, {
+          name,
+          address: contractAddress,
+          members,
+          owners,
+        })
+      }
+
+      return [fetchedMemberships, settlemintDetails]
     } catch (error) {
       console.log(error)
+      return [undefined, undefined]
     }
   }, [wallet])
 
@@ -79,8 +119,9 @@ export const useSettlemints = (): [
     let isMounted = true
     const doLoad = async () => {
       setIsLoading(true)
-      const newSettlemints = await fetchSettlemints()
-      isMounted && setSettlemints(newSettlemints)
+      const [newMemberships, settlemintDetails] = await fetchSettlemints()
+      isMounted && setMemberships(newMemberships)
+      isMounted && setMappedDetails(settlemintDetails)
       isMounted && setIsLoading(false)
     }
 
@@ -90,5 +131,5 @@ export const useSettlemints = (): [
     }
   }, [fetchSettlemints])
 
-  return [settlemints, isLoading]
+  return [memberships, mappedDetails, isLoading]
 }

@@ -1,7 +1,8 @@
 import styled from "@emotion/styled"
-import { Box, Slide, Typography } from "@mui/material"
+import { AppBar, Box, Slide, Toolbar, Typography } from "@mui/material"
 import { lazy, Suspense, useState } from "react"
 import { WalletControl } from "./components/WalletControl"
+import { Memberships, SettlemintMap } from "./hooks/useSettlemints"
 const ANIMATION_DURATION = 300
 
 const Wrapper = styled(Box)`
@@ -33,18 +34,14 @@ const Wrapper = styled(Box)`
   }
 `
 
-const Header = styled(Box)`
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 100vw;
-  height: 50px;
-  display: flex;
+const Header = styled(AppBar)`
   align-items: center;
+  color: rgba(0, 0, 0, 0.87);
+  position: "static";
 `
 
 const Main = styled.div`
-  width: 80vw;
+  width: 60vw;
   position: relative;
   margin: auto;
 `
@@ -52,6 +49,8 @@ const Main = styled.div`
 export type AppState = {
   selectedSettlement?: string
   activeStep: number
+  memberships?: Memberships
+  settlemintMap?: SettlemintMap
 }
 
 const steps = [
@@ -93,6 +92,7 @@ export const App = () => {
     "right" | "left" | "up" | "down"
   >("right")
 
+  // useEffect with appState.activeStep as dependency
   const transitionToStep = (newStep: number) => {
     const nextDirection = activeStep < newStep ? "left" : "right"
 
@@ -102,7 +102,6 @@ export const App = () => {
       setAnimationDirection(nextDirection)
       setActiveStep(newStep)
       setAnimateIn(true)
-      console.log(nextDirection)
     }, ANIMATION_DURATION)
   }
 
@@ -110,6 +109,7 @@ export const App = () => {
     if (appState.activeStep !== newAppState.activeStep) {
       transitionToStep(newAppState.activeStep)
     }
+    console.log("new app state", newAppState)
     setAppState(newAppState)
   }
 
@@ -125,13 +125,19 @@ export const App = () => {
           }
         }}
       >
-        <Typography ml={2} variant="h1">
-          537713
-        </Typography>
-        <Typography variant="h1" fontWeight={200}>
-          Mint
-        </Typography>
-        <WalletControl />
+        <Toolbar
+          sx={{
+            width: "100%",
+          }}
+        >
+          <Typography ml={2} fontFamily="monospace" variant="h1">
+            0x537713
+          </Typography>
+          <Typography fontFamily="monospace" variant="h1" fontWeight={200}>
+            Mint
+          </Typography>
+          <WalletControl />
+        </Toolbar>
       </Header>
       <Main>
         <AnimatedStep

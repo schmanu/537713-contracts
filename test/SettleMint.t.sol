@@ -32,6 +32,7 @@ contract SettleMintTest is Test {
         assertFalse(settlemint.isMember(member2));
         assertTrue(settlemint.isOwner(address(this)));
         assertFalse(settlemint.isOwner(member1));
+        assertEq(settlemint.getMembers()[0], member1);
     }
 
     function testMultipleMembers() public {
@@ -56,6 +57,8 @@ contract SettleMintTest is Test {
         assertTrue(settlemint.isMember(member1));
         assertTrue(settlemint.isMember(member2));
         assertTrue(settlemint.isMember(member3));
+
+        assertEq(settlemint.getMembers(), members);
 
         assertTrue(settlemint.isOwner(address(this)));
         assertFalse(settlemint.isOwner(member1));
@@ -127,10 +130,17 @@ contract SettleMintTest is Test {
         settlemint.addOwner(member1);
         settlemint.addOwner(member2);
 
+        address[] memory  expectedOwners = new address[](3);
+        expectedOwners[0] = member2;
+        expectedOwners[1] = member1;
+        expectedOwners[2] = address(this);
+
+
         assertTrue(settlemint.isOwner(member1));
         assertTrue(settlemint.isOwner(member2));
         assertTrue(settlemint.isOwner(address(this)));
         assertFalse(settlemint.isOwner(member3));
+        assertEq(settlemint.getOwners(), expectedOwners);
 
         settlemint.removeOwner(member2);
         assertTrue(settlemint.isOwner(member1));

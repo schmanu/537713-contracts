@@ -44,7 +44,7 @@
     "eject": "react-scripts eject",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
-    "generate-types:settlemint": "typechain --target ethers-v5 --out-dir ./src/types/contracts '../out/SettleMint.sol/SettleMint.json'",
+    "generate-types:settlemint": "typechain --target ethers-v5 --out-dir ./src/types/contracts './contracts/SettleMint.json'",
     "postinstall": "yarn run generate-types:settlemint"
   },
   "eslintConfig": {

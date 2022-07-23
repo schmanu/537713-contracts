@@ -15,8 +15,15 @@ import { SettleMint__factory } from "src/types/contracts"
 import { shortenAddress } from "src/utils/addresses"
 import AccountCircleTwoToneIcon from "@mui/icons-material/AccountCircleTwoTone"
 import AdminPanelSettingsTwoToneIcon from "@mui/icons-material/AdminPanelSettingsTwoTone"
+import { AppState } from "src/App"
 
-export const Settlemints = () => {
+export const Settlemints = ({
+  updateState,
+  appState,
+}: {
+  updateState: (newState: AppState) => void
+  appState: AppState
+}) => {
   const [settlemints, isLoading] = useSettlemints()
 
   const wallet = useWallet()
@@ -94,7 +101,14 @@ export const Settlemints = () => {
                   )}
                   {Array.from(combinedList.values()).map((settlemint) => (
                     <Grid item xs={12} key={settlemint.address}>
-                      <ButtonBase>
+                      <ButtonBase
+                        onClick={() =>
+                          updateState({
+                            selectedSettlement: settlemint.address,
+                            activeStep: 1,
+                          })
+                        }
+                      >
                         <Grid
                           container
                           direction="row"
@@ -157,3 +171,5 @@ export const Settlemints = () => {
     </Paper>
   )
 }
+
+export default Settlemints

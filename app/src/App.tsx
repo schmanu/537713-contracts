@@ -1,7 +1,8 @@
 import styled from "@emotion/styled"
-import { Box, Typography } from "@mui/material"
-import { Settlemints } from "./components/screens/Settlemints/Settlemints"
+import { Box, Slide, Typography } from "@mui/material"
+import { lazy, Suspense, useState } from "react"
 import { WalletControl } from "./components/WalletControl"
+const ANIMATION_DURATION = 300
 
 const Wrapper = styled(Box)`
   position: fixed;
@@ -10,7 +11,7 @@ const Wrapper = styled(Box)`
   width: 100vw;
   height: 100vh;
   align-items: center;
-  overflow: auto;
+  overflow-y: auto;
   display: flex;
   justify-content: center;
 
@@ -48,7 +49,72 @@ const Main = styled.div`
   margin: auto;
 `
 
+export type AppState = {
+  selectedSettlement?: string
+  activeStep: number
+}
+
+const steps = [
+  lazy(() => import("src/components/screens/Settlemints/Settlemints")),
+  lazy(
+    () => import("src/components/screens/SettlemintDetails/SettlemintDetails")
+  ),
+]
+
+const AnimatedStep = ({
+  in: inProp,
+  animationDirection,
+  children,
+}: {
+  in: boolean
+  animationDirection: "right" | "left" | "up" | "down"
+  children: JSX.Element | null
+}) => (
+  <Slide
+    direction={animationDirection}
+    in={inProp}
+    enter
+    exit
+    unmountOnExit
+    timeout={ANIMATION_DURATION}
+  >
+    <div>{children}</div>
+  </Slide>
+)
+
 export const App = () => {
+  const [activeStep, setActiveStep] = useState(0)
+  const [appState, setAppState] = useState<AppState>({
+    activeStep: 0,
+  })
+
+  const [animateIn, setAnimateIn] = useState(true)
+  const [animationDirection, setAnimationDirection] = useState<
+    "right" | "left" | "up" | "down"
+  >("right")
+
+  const transitionToStep = (newStep: number) => {
+    const nextDirection = activeStep < newStep ? "left" : "right"
+
+    // trigger animation out
+    setAnimateIn(false)
+    setTimeout(() => {
+      setAnimationDirection(nextDirection)
+      setActiveStep(newStep)
+      setAnimateIn(true)
+      console.log(nextDirection)
+    }, ANIMATION_DURATION)
+  }
+
+  const updateState = (newAppState: AppState) => {
+    if (appState.activeStep !== newAppState.activeStep) {
+      transitionToStep(newAppState.activeStep)
+    }
+    setAppState(newAppState)
+  }
+
+  const Step = steps[activeStep]
+
   return (
     <Wrapper>
       <Header
@@ -68,7 +134,15 @@ export const App = () => {
         <WalletControl />
       </Header>
       <Main>
-        <Settlemints />
+        <AnimatedStep
+          key={activeStep}
+          in={animateIn}
+          animationDirection={animationDirection}
+        >
+          <Suspense fallback={<div>Loading... </div>}>
+            <Step appState={appState} updateState={updateState} />
+          </Suspense>
+        </AnimatedStep>
       </Main>
     </Wrapper>
   )

@@ -1,15 +1,14 @@
-import { Box, Button, Divider, Grid, Typography } from "@mui/material"
+import { Box, Button, Grid, Typography } from "@mui/material"
 import { useOnboard } from "src/hooks/useOnboard"
 import useWallet from "src/hooks/useWallet"
+import { shortenAddress } from "src/utils/addresses"
 
 const chainNameMapping = {
   ["1" as string]: "Ethereum",
   ["4" as string]: "Rinkeby",
-  ["5" as string]: "Görli",
+  ["5" as string]: "Goerli",
+  ["100" as string]: "Gnosis Chain",
 }
-
-const shortenAddress = (address: string) =>
-  address.slice(0, 7) + "..." + address.slice(37, 42)
 
 export const WalletControl = () => {
   const onboard = useOnboard()
@@ -34,6 +33,7 @@ export const WalletControl = () => {
       mr={2}
       alignItems="center"
       gap={2}
+      flexWrap="nowrap"
     >
       <Grid item>
         <Box>

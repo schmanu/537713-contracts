@@ -85,6 +85,21 @@ const theme = createTheme({
         },
       },
     },
+    MuiCssBaseline: {
+      styleOverrides: `
+        @font-face {
+          font-family: 'Averta';
+          font-display: swap;
+          font-weight: 400;
+          src: url('/fonts/Averta-normal.woff2') format('woff2');
+        }
+        @font-face {
+          font-family: 'Averta';
+          font-display: swap;
+          font-weight: bold;
+          src: url('/fonts/Averta-ExtraBold.woff2') format('woff2');
+        }`,
+    },
   },
 })
 

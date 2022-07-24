@@ -8,6 +8,7 @@
   "dependencies": {
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
+    "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.9.1",
     "@web3-onboard/core": "^2.5.0",
     "@web3-onboard/gnosis": "^2.0.7",
@@ -42,7 +43,9 @@
     "test": "craco test",
     "eject": "react-scripts eject",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix"
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "generate-types:settlemint": "typechain --target ethers-v5 --out-dir ./src/types/contracts './contracts/SettleMint.json'",
+    "postinstall": "yarn run generate-types:settlemint"
   },
   "eslintConfig": {
     "extends": [

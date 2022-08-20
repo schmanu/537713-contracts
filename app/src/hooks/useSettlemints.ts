@@ -29,13 +29,15 @@ const ADDED_OWNER_TOPIC = ethers.utils.id("AddedOwner(address)")
 export const useSettlemints = (): [
   Memberships | undefined,
   Map<string, SettlemintDetails> | undefined,
-  boolean
+  boolean,
+  string | undefined
 ] => {
   const wallet = useWallet()
   const [memberships, setMemberships] = useState<Memberships>()
   const [mappedDetails, setMappedDetails] =
     useState<Map<string, SettlemintDetails>>()
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string>()
 
   const fetchSettlemints = useCallback(async (): Promise<
     [Memberships | undefined, Map<string, SettlemintDetails> | undefined]
@@ -109,8 +111,9 @@ export const useSettlemints = (): [
       }
 
       return [fetchedMemberships, settlemintDetails]
-    } catch (error) {
-      console.log(error)
+    } catch (err: any) {
+      console.log(err)
+      setError(err.toString())
       return [undefined, undefined]
     }
   }, [wallet])
@@ -131,5 +134,5 @@ export const useSettlemints = (): [
     }
   }, [fetchSettlemints])
 
-  return [memberships, mappedDetails, isLoading]
+  return [memberships, mappedDetails, isLoading, error]
 }

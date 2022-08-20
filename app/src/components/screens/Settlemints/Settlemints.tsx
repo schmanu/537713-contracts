@@ -11,9 +11,9 @@ import { useSettlemints } from "src/hooks/useSettlemints"
 import useWallet from "src/hooks/useWallet"
 import { SettleMint__factory } from "src/types/contracts"
 
+import { useEffect } from "react"
 import { AppState } from "src/App"
 import { MembershipList } from "src/components/common/MembershipList"
-import { useEffect } from "react"
 
 export const Settlemints = ({
   updateState,
@@ -22,7 +22,7 @@ export const Settlemints = ({
   updateState: (newState: AppState) => void
   appState: AppState
 }) => {
-  const [memberships, detailsMap, isLoading] = useSettlemints()
+  const [memberships, detailsMap, isLoading, error] = useSettlemints()
 
   useEffect(() => {
     if (!isLoading) {
@@ -60,29 +60,23 @@ export const Settlemints = ({
         gap: 4,
       }}
     >
-      {isLoading || !memberships ? (
-        wallet ? (
-          <Box
-            display="flex"
-            flexDirection="row"
-            alignItems="center"
-            gap="16px"
-          >
-            <CircularProgress />
-            <Typography variant="h2">Loading SettleMints...</Typography>
-          </Box>
-        ) : (
-          <Box
-            display="flex"
-            flexDirection="row"
-            alignItems="center"
-            gap="16px"
-          >
-            <Typography variant="h2">
-              You need to connect a wallet to use this app.
-            </Typography>
-          </Box>
-        )
+      {isLoading ? (
+        <Box display="flex" flexDirection="row" alignItems="center" gap="16px">
+          <CircularProgress />
+          <Typography variant="h2">Loading SettleMints...</Typography>
+        </Box>
+      ) : error ? (
+        <Box display="flex" flexDirection="row" alignItems="center" gap="16px">
+          <Typography color="error" variant="h2">
+            Error loading SettleMints!
+          </Typography>
+        </Box>
+      ) : !wallet ? (
+        <Box display="flex" flexDirection="row" alignItems="center" gap="16px">
+          <Typography variant="h2">
+            You need to connect a wallet to use this app.
+          </Typography>
+        </Box>
       ) : (
         <Box>
           <Grid container direction="column" mb={8}>

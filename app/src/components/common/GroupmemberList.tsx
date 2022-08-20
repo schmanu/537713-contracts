@@ -1,13 +1,12 @@
-import { Grid, Typography, ButtonBase, Chip, Button } from "@mui/material"
-import { SettlemintDetails } from "src/hooks/useSettlemints"
-import { shortenAddress } from "src/utils/addresses"
 import AccountCircleTwoToneIcon from "@mui/icons-material/AccountCircleTwoTone"
 import AdminPanelSettingsTwoToneIcon from "@mui/icons-material/AdminPanelSettingsTwoTone"
+import { ButtonBase, Chip, Grid, Typography } from "@mui/material"
+import { rotatedColorPool } from "src/config/theme"
+import { SettlemintDetails } from "src/hooks/useSettlemints"
 import useWallet from "src/hooks/useWallet"
+import { shortenAddress } from "src/utils/addresses"
 import { AddMemberDialog } from "./AddMemberDialog"
 import { AddOwnerDialog } from "./AddOwnerDialog"
-
-const rotatedColorPool = ["#3EC1D3", "#faff5b", "#FF9A00", "#FF165D"]
 
 export const GroupMemberList = ({
   settlemintDetails,

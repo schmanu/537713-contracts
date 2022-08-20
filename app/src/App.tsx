@@ -15,6 +15,8 @@ const Wrapper = styled(Box)`
   overflow-y: auto;
   display: flex;
   justify-content: center;
+  padding-top: 72px;
+  padding-bottom: 32px;
 
   // Animation:
   background: linear-gradient(-45deg, #9ee6da, #8bf9cb, #be9ad5, #c8c1d7);
@@ -41,7 +43,9 @@ const Header = styled(AppBar)`
 `
 
 const Main = styled.div`
-  width: 60vw;
+  min-width: 60vw;
+  max-width: 100vw;
+  overflow: auto;
   position: relative;
   margin: auto;
 `

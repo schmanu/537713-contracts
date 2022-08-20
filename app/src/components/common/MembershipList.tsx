@@ -1,11 +1,10 @@
-import { Grid, Typography, ButtonBase, Chip } from "@mui/material"
-import { Memberships, SettlemintMap } from "src/hooks/useSettlemints"
-import { shortenAddress } from "src/utils/addresses"
 import AccountCircleTwoToneIcon from "@mui/icons-material/AccountCircleTwoTone"
 import AdminPanelSettingsTwoToneIcon from "@mui/icons-material/AdminPanelSettingsTwoTone"
+import { ButtonBase, Chip, Grid, Typography } from "@mui/material"
 import { useMemo } from "react"
-
-const rotatedColorPool = ["#3EC1D3", "#faff5b", "#FF9A00", "#FF165D"]
+import { rotatedColorPool } from "src/config/theme"
+import { Memberships, SettlemintMap } from "src/hooks/useSettlemints"
+import { shortenAddress } from "src/utils/addresses"
 
 export const MembershipList = ({
   memberships,

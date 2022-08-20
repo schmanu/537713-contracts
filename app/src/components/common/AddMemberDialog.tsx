@@ -1,11 +1,11 @@
 import {
+  Button,
   Dialog,
-  DialogTitle,
+  DialogActions,
   DialogContent,
   DialogContentText,
+  DialogTitle,
   TextField,
-  DialogActions,
-  Button,
 } from "@mui/material"
 import { ethers } from "ethers"
 import { useState } from "react"
@@ -50,7 +50,7 @@ export const AddMemberDialog = ({
         Add
       </Button>
       <Dialog open={open} onClose={() => setOpen(false)}>
-        <DialogTitle>Subscribe</DialogTitle>
+        <DialogTitle>Add Member</DialogTitle>
         <DialogContent>
           <DialogContentText>
             Enter the address of the member you want to add.

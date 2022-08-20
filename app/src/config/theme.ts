@@ -4,7 +4,7 @@ export const rotatedColorPool = ["#3EC1D3", "#faff5b", "#FF9A00", "#FF165D"]
 
 const theme = createTheme({
   typography: {
-    fontFamily: "Averta, Roboto, sans-serif",
+    fontFamily: "Montserrat, Roboto, sans-serif",
     h1: {
       fontSize: "2rem",
       fontWeight: "bold",
@@ -90,16 +90,22 @@ const theme = createTheme({
     MuiCssBaseline: {
       styleOverrides: `
         @font-face {
-          font-family: 'Averta';
+          font-family: 'Montserrat';
           font-display: swap;
           font-weight: 400;
-          src: url('/fonts/Averta-normal.woff2') format('woff2');
+          src: url('/fonts/Montserrat-Regular.ttf') format('truetype');
         }
         @font-face {
-          font-family: 'Averta';
+          font-family: 'Montserrat';
+          font-display: swap;
+          font-weight: 200;
+          src: url('/fonts/Montserrat-Thin.ttf') format('truetype');
+        }
+        @font-face {
+          font-family: 'Montserrat';
           font-display: swap;
           font-weight: bold;
-          src: url('/fonts/Averta-ExtraBold.woff2') format('woff2');
+          src: url('/fonts/Montserrat-Bold.ttf') format('truetype');
         }`,
     },
   },

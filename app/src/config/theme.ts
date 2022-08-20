@@ -1,5 +1,7 @@
 import { createTheme } from "@mui/material"
 
+export const rotatedColorPool = ["#3EC1D3", "#faff5b", "#FF9A00", "#FF165D"]
+
 const theme = createTheme({
   typography: {
     fontFamily: "Averta, Roboto, sans-serif",
@@ -28,14 +30,14 @@ const theme = createTheme({
       fontWeight: 400,
       fontSize: "16px",
       lineHeight: "24px",
-      color: "#B2BBC0",
+      color: "#888888",
     },
     subtitle2: {
       fontStyle: "normal",
       fontWeight: 400,
       fontSize: "14px",
       lineHeight: "24px",
-      color: "#B2BBC0",
+      color: "#888888",
     },
   },
   palette: {

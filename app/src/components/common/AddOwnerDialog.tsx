@@ -1,16 +1,21 @@
 import {
+  Button,
   Dialog,
-  DialogTitle,
+  DialogActions,
   DialogContent,
   DialogContentText,
-  TextField,
-  DialogActions,
-  Button,
+  DialogTitle,
 } from "@mui/material"
 import { ethers } from "ethers"
 import { useState } from "react"
+import { FormProvider, useForm } from "react-hook-form"
 import useWallet from "src/hooks/useWallet"
 import { SettleMint__factory } from "src/types/contracts"
+import AddressInput from "./AddressInput"
+
+type DialogData = {
+  address: string
+}
 
 export const AddOwnerDialog = ({
   contractAddress,
@@ -19,14 +24,23 @@ export const AddOwnerDialog = ({
 }) => {
   const [open, setOpen] = useState(false)
 
-  const [address, setAddress] = useState("")
+  const formMethods = useForm<DialogData>({
+    mode: "all",
+    defaultValues: {
+      address: "",
+    },
+  })
+
+  const { setValue, watch, handleSubmit } = formMethods
 
   const wallet = useWallet()
 
-  const handleSubmit = async () => {
-    if (!wallet || !address || !ethers.utils.isAddress(address)) {
+  const onSubmit = async () => {
+    if (!wallet) {
       return
     }
+
+    const address = watch("address")
 
     const web3Provider = new ethers.providers.Web3Provider(wallet.provider)
     const contract = SettleMint__factory.connect(
@@ -35,7 +49,7 @@ export const AddOwnerDialog = ({
     )
 
     await contract.addOwner(address)
-    setAddress("")
+    setValue("address", "")
     setOpen(false)
   }
 
@@ -50,27 +64,28 @@ export const AddOwnerDialog = ({
         Add
       </Button>
       <Dialog open={open} onClose={() => setOpen(false)}>
-        <DialogTitle>Subscribe</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Enter the address of the owner you want to add. Be aware that owners
-            can remove and add other owners and members.
-          </DialogContentText>
-          <TextField
-            margin="dense"
-            id="name"
-            label="Owner address"
-            type="email"
-            fullWidth
-            variant="standard"
-            value={address}
-            onChange={(event) => setAddress(event.target.value)}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpen(false)}>Cancel</Button>
-          <Button onClick={handleSubmit}>Add Owner</Button>
-        </DialogActions>
+        <form action="submit" onSubmit={handleSubmit(onSubmit)}>
+          <DialogTitle>Add Owner</DialogTitle>
+          <DialogContent>
+            <FormProvider {...formMethods}>
+              <DialogContentText>
+                Enter the address of the owner you want to add. Be aware that
+                owners can remove and add other owners and members.
+              </DialogContentText>
+              <AddressInput
+                margin="dense"
+                name="address"
+                label="Owner address"
+                fullWidth
+                variant="standard"
+              />
+            </FormProvider>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpen(false)}>Cancel</Button>
+            <Button type="submit">Add Owner</Button>
+          </DialogActions>
+        </form>
       </Dialog>
     </>
   )

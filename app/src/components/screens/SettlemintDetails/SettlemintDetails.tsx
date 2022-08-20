@@ -1,6 +1,8 @@
-import { Button, Grid, Paper, Typography } from "@mui/material"
+import { Box, Button, Paper, Tab, Tabs, Typography } from "@mui/material"
+import { useState } from "react"
 import { AppState } from "src/App"
-import { GroupMemberList } from "src/components/common/GroupmemberList"
+import { Details } from "./Details"
+import { Expenses } from "./Expenses"
 
 export const SettlemintDetails = ({
   updateState,
@@ -9,8 +11,16 @@ export const SettlemintDetails = ({
   updateState: (newState: AppState) => void
   appState: AppState
 }) => {
+  const [selectedTab, setSelectedTab] = useState("details")
+
+  const handleChangeTab = (
+    _: React.SyntheticEvent<Element, Event>,
+    newTab: string
+  ) => {
+    setSelectedTab(newTab)
+  }
+
   if (!appState.selectedSettlement) {
-    console.log("No settlemint selected. Cannot render details")
     return null
   }
 
@@ -19,12 +29,6 @@ export const SettlemintDetails = ({
   )
 
   if (!selectedSettlemint) {
-    console.log(
-      "No settlemint details found for address",
-      appState.selectedSettlement,
-      appState.settlemintMap
-    )
-
     return null
   }
 
@@ -39,13 +43,19 @@ export const SettlemintDetails = ({
         gap: 1,
       }}
     >
-      <div>
-        <Typography variant="h3">Settlemint Details</Typography>
+      <Typography variant="h3">{selectedSettlemint.name}</Typography>
+
+      <Box
+        display="flex"
+        flexDirection="row"
+        justifyContent="space-between"
+        alignItems="center"
+      >
+        <Tabs value={selectedTab} onChange={handleChangeTab}>
+          <Tab label="Details" value="details" id="details-tab" />
+          <Tab label="Expenses" value="expenses" id="expenses-tab" />
+        </Tabs>
         <Button
-          sx={{
-            marginTop: -4,
-            float: "right",
-          }}
           size="small"
           onClick={() =>
             updateState({
@@ -57,30 +67,23 @@ export const SettlemintDetails = ({
         >
           &larr; Back
         </Button>
+      </Box>
+      <div
+        role="tabpanel"
+        hidden={selectedTab !== "details"}
+        id="details-tab"
+        aria-labelledby="details-tab"
+      >
+        <Details settleMint={selectedSettlemint} />
       </div>
-      <Grid mt={4} mb={4} container direction="column">
-        <Grid container direction="row">
-          <Grid item>
-            <Typography fontWeight={700}>Name</Typography>
-          </Grid>
-          <Grid item xs>
-            <Typography textAlign="right">
-              {selectedSettlemint?.name}
-            </Typography>
-          </Grid>
-        </Grid>
-        <Grid container direction="row">
-          <Grid item>
-            <Typography fontWeight={700}>Address</Typography>
-          </Grid>
-          <Grid item xs>
-            <Typography fontFamily="monospace" textAlign="right">
-              {appState.selectedSettlement}
-            </Typography>
-          </Grid>
-        </Grid>
-      </Grid>
-      <GroupMemberList settlemintDetails={selectedSettlemint} />
+      <div
+        role="tabpanel"
+        hidden={selectedTab !== "expenses"}
+        id="expenses-tab"
+        aria-labelledby="expenses-tab"
+      >
+        <Expenses settleMint={selectedSettlemint} />
+      </div>
     </Paper>
   )
 }
